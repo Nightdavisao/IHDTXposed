@@ -11,6 +11,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 class XposedModule: IXposedHookLoadPackage {
     override fun handleLoadPackage(param: XC_LoadPackage.LoadPackageParam?) {
         if (param != null && param.packageName != "android") return
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
 
         val classLoader = param!!.classLoader
         // com.android.server.power.batterysaver.BatterySaverPolicy
@@ -18,10 +19,8 @@ class XposedModule: IXposedHookLoadPackage {
 
         XposedBridge.hookAllConstructors(policyClazz, object : XC_MethodHook() {
             override fun afterHookedMethod(paramHook: MethodHookParam?) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    if (paramHook != null) {
-                        XposedHelpers.setBooleanField(paramHook.thisObject, "enableNightMode", false)
-                    }
+                if (paramHook != null) {
+                    XposedHelpers.setBooleanField(paramHook.thisObject, "enableNightMode", false)
                 }
             }
         })
