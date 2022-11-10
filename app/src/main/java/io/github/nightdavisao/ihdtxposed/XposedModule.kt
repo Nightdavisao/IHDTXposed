@@ -18,7 +18,7 @@ class XposedModule: IXposedHookLoadPackage {
 
         XposedBridge.hookAllConstructors(policyClazz, object : XC_MethodHook() {
             override fun afterHookedMethod(paramHook: MethodHookParam?) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     if (paramHook != null) {
                         XposedHelpers.setBooleanField(paramHook.thisObject, "enableNightMode", false)
                     }
